@@ -68,9 +68,10 @@ export class EditUserComponent implements OnInit, AfterViewChecked  {
         this.router.navigate(['/security/users/']);
       }
       this.userForm = this.formBuilder.group({
-        firstName: new FormControl('', [Validators.required]),
+        name: new FormControl(''),
+        firstName: new FormControl(''),
         middleName: new FormControl(''),
-        lastName: new FormControl('', [Validators.required]),
+        lastName: new FormControl(''),
         genderId: new FormControl('', [Validators.required]),
         birthDate: new FormControl(''),
         email: new FormControl('',
@@ -103,11 +104,15 @@ export class EditUserComponent implements OnInit, AfterViewChecked  {
           this.isLoading = false;
           this.isProcessing = false;
           if(res.data.user.userType.userTypeId === '1'){
+            this.userForm.controls['name'].addValidators([Validators.required]);
             this.userForm.controls['roleId'] = new FormControl(res.data.user.role.roleId, [Validators.required]);
             this.userForm.controls['birthDate'] = new FormControl('');
             this.initRoles();
           }
           else if(res.data.user.userType.userTypeId === '2'){
+            this.userForm.controls['firstName'].addValidators([Validators.required]);
+            this.userForm.controls['lastName'].addValidators([Validators.required]);
+            this.userForm.controls['address'].addValidators([Validators.required]);
             this.userForm.controls['birthDate'] = new FormControl(new Date(res.data.birthDate), [Validators.required]);
             this.userForm.controls['roleId'] = new FormControl('');
           }

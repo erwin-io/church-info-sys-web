@@ -13,7 +13,7 @@ export class AppComponent {
   grantNotif = false;
   constructor(private snackBar: MatSnackBar,
     private socket: CustomSocket) {
-      this.socket.init();
+      // this.socket.init();
       this.socket.fromEvent('messageAdded').subscribe((message: any) => {
         if(this.grantNotif) {
           const notify = new Notification(`New message from ${message.fromUser.username}`, {

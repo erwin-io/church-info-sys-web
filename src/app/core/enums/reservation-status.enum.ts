@@ -1,4 +1,4 @@
-export enum AppointmentStatusEnum {
+export enum ReservationStatusEnum {
   PENDING = 1,
   APPROVED = 2,
   COMPLETED = 3,

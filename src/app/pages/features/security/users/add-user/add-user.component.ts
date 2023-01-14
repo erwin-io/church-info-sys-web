@@ -58,16 +58,13 @@ export class AddUserComponent implements OnInit {
       }
       if(this.userTypeId === 1){
         this.userForm = this.formBuilder.group({
-          firstName: ['', Validators.required],
-          middleName: [''],
-          lastName: ['', Validators.required],
+          name: ['', Validators.required],
           genderId: ['', Validators.required],
           email: ['',
           Validators.compose(
               [Validators.email, Validators.required])],
           mobileNumber: ['',
               [Validators.minLength(11),Validators.maxLength(11), Validators.pattern("^[0-9]*$"), Validators.required]],
-          address: ['', Validators.required],
           username: ['', [Validators.required, Validators.minLength(3), Validators.pattern("^[a-z0-9_]*$")]],
           password: ['',[Validators.minLength(6), Validators.maxLength(16), Validators.required]],
           confirmPassword : '',

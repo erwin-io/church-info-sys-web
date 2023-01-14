@@ -8,6 +8,7 @@ import {
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import * as moment from 'moment';
 import { AppConfigService } from 'src/app/core/services/app-config.service';
+import { ReservationService } from 'src/app/core/services/reservation.service';
 import { Snackbar } from 'src/app/core/ui/snackbar';
 import { AlertDialogModel } from 'src/app/shared/alert-dialog/alert-dialog-model';
 import { AlertDialogComponent } from 'src/app/shared/alert-dialog/alert-dialog.component';
@@ -20,9 +21,9 @@ import { ScheduleDialogComponent } from '../schedule-dialog/schedule-dialog.comp
 })
 export class SelectTimeslotComponent implements OnInit {
   data: {
-    appointmentId?: string;
+    reservationId?: string;
     reschedule?: boolean;
-    appointmentDate: Date;
+    reservationDate: Date;
     selectTime: string;
     durationInHours: number;
     minDate: Date;
@@ -39,22 +40,23 @@ export class SelectTimeslotComponent implements OnInit {
     private formBuilder: FormBuilder,
     private dialog: MatDialog,
     private snackBar: Snackbar,
+    private reservationService: ReservationService,
     public dialogRef: MatDialogRef<SelectTimeslotComponent>
   ) {
     dialogRef.disableClose = true;
   }
   ngOnInit(): void {
     this.selectTimeSlotForm = this.formBuilder.group({
-      appointmentDate: [this.data.appointmentDate, Validators.required],
+      reservationDate: [this.data.reservationDate, Validators.required],
       selectTime: [this.data.selectTime, Validators.required],
     });
     console.log(this.selectTimeSlotForm.value);
-    this.getAppointmentsForADay(
-      moment(this.data.appointmentDate).format('YYYY-MM-DD'),
+    this.getReservationForADay(
+      moment(this.data.reservationDate).format('YYYY-MM-DD'),
       this.timeSlotOptions(this.data.durationInHours)
     );
-    this.f['appointmentDate'].valueChanges.subscribe(async (selectedValue) => {
-      this.getAppointmentsForADay(
+    this.f['reservationDate'].valueChanges.subscribe(async (selectedValue) => {
+      this.getReservationForADay(
         moment(selectedValue).format('YYYY-MM-DD'),
         this.timeSlotOptions(Number(this.data.durationInHours))
       );
@@ -66,9 +68,9 @@ export class SelectTimeslotComponent implements OnInit {
       if (this.data.reschedule) {
         const time = this.selectTimeSlotForm.value.selectTime;
         const param = {
-          appointmentId: this.data.appointmentId,
-          appointmentDate: moment(
-            this.selectTimeSlotForm.value.appointmentDate
+          reservationId: this.data.reservationId,
+          reservationDate: moment(
+            this.selectTimeSlotForm.value.reservationDate
           ).format('YYYY-MM-DD'),
           time: time.split(':')[1].length === 1 ? `${time.split(':')[0]}:0${Number(time.split(':')[1])}` : time
         };
@@ -76,7 +78,7 @@ export class SelectTimeslotComponent implements OnInit {
         const dialogData = new AlertDialogModel();
         dialogData.title = 'Save';
         dialogData.message =
-          'Are you sure you want to reschedule appointment?';
+          'Are you sure you want to reschedule reservation?';
         dialogData.confirmButton = {
           visible: true,
           text: 'yes',
@@ -96,37 +98,37 @@ export class SelectTimeslotComponent implements OnInit {
             if (confirmed) {
               this.isProcessing = true;
               dialogRef.componentInstance.isProcessing = this.isProcessing;
-              // await this.appointmentService
-              //   .rescheduleAppointment(param)
-              //   .subscribe(
-              //     async (res) => {
-              //       if (res.success) {
-              //         this.conFirm.emit(true);
-              //         this.snackBar.snackbarSuccess('Appointment rescheduled!');
-              //         dialogRef.close();
-              //         this.isProcessing = false;
-              //         dialogRef.componentInstance.isProcessing =
-              //           this.isProcessing;
-              //       } else {
-              //         this.isLoading = false;
-              //         this.error = Array.isArray(res.message)
-              //           ? res.message[0]
-              //           : res.message;
-              //         this.snackBar.snackbarError(this.error);
-              //         dialogRef.componentInstance.isProcessing =
-              //           this.isProcessing;
-              //       }
-              //     },
-              //     async (err) => {
-              //       this.isProcessing = false;
-              //       this.error = Array.isArray(err.message)
-              //         ? err.message[0]
-              //         : err.message;
-              //       this.snackBar.snackbarError(this.error);
-              //       dialogRef.componentInstance.isProcessing =
-              //         this.isProcessing;
-              //     }
-              //   );
+              await this.reservationService
+                .rescheduleReservation(param)
+                .subscribe(
+                  async (res) => {
+                    if (res.success) {
+                      this.conFirm.emit(true);
+                      this.snackBar.snackbarSuccess('Appointment rescheduled!');
+                      dialogRef.close();
+                      this.isProcessing = false;
+                      dialogRef.componentInstance.isProcessing =
+                        this.isProcessing;
+                    } else {
+                      this.isLoading = false;
+                      this.error = Array.isArray(res.message)
+                        ? res.message[0]
+                        : res.message;
+                      this.snackBar.snackbarError(this.error);
+                      dialogRef.componentInstance.isProcessing =
+                        this.isProcessing;
+                    }
+                  },
+                  async (err) => {
+                    this.isProcessing = false;
+                    this.error = Array.isArray(err.message)
+                      ? err.message[0]
+                      : err.message;
+                    this.snackBar.snackbarError(this.error);
+                    dialogRef.componentInstance.isProcessing =
+                      this.isProcessing;
+                  }
+                );
             }
           }
         );
@@ -152,12 +154,12 @@ export class SelectTimeslotComponent implements OnInit {
   // eslint-disable-next-line @typescript-eslint/member-ordering
   timeSlotOptions(hours = 1) {
     const notAvailableHours =
-      this.appconfig.config.appointmentConfig.timeSlotNotAvailableHours;
+      this.appconfig.config.reservationConfig.timeSlotNotAvailableHours;
     const start = this.toMinutes(
-      this.appconfig.config.appointmentConfig.timeSlotHours.start
+      this.appconfig.config.reservationConfig.timeSlotHours.start
     );
     const end = this.toMinutes(
-      this.appconfig.config.appointmentConfig.timeSlotHours.end
+      this.appconfig.config.reservationConfig.timeSlotHours.end
     );
     const slotOptions = Array.from(
       {
@@ -189,59 +191,61 @@ export class SelectTimeslotComponent implements OnInit {
     return time.join(''); // return adjusted time or original string
   }
 
-  async getAppointmentsForADay(dateString: string, timeSlotOptions: string[]) {
+  async getReservationForADay(dateString: string, timeSlotOptions: string[]) {
     try {
       this.isLoading = true;
-      // await this.appointmentService
-      //   .getAppointmentsForADay(dateString)
-      //   .subscribe(
-      //     async (res) => {
-      //       if (res.success) {
-      //         const hSlotTaken = res.data.map((a) => {
-      //           const appointmentTimeStart = moment(
-      //             `${a.appointmentDate} ${a.timeStart}`
-      //           ).format('HH');
-      //           const appointmentTimeEnd = moment(
-      //             `${a.appointmentDate} ${a.timeEnd}`
-      //           ).format('HH');
-      //           return {
-      //             appointmentTimeStart,
-      //             appointmentTimeEnd,
-      //           };
-      //         });
+      await this.reservationService
+        .getReservationForADay(dateString)
+        .subscribe(
+          async (res) => {
+            if (res.success) {
+              const hSlotTaken = res.data.map((r) => {
+                const appointmentTimeStart = moment(
+                  `${r.reservationDate} ${r.time}`
+                ).format('HH');
+                const appointmentDate = new Date(moment(
+                  `${r.reservationDate} ${r.time}`
+                ).format('YYYY-MM-DD HH:mm'));
+                appointmentDate.setHours(appointmentDate.getHours() + this.data.durationInHours)
+                const appointmentTimeEnd = moment(appointmentDate).format('HH');
+                return {
+                  appointmentTimeStart,
+                  appointmentTimeEnd,
+                };
+              });
 
-      //         this.availableTimeSlot = timeSlotOptions
-      //           .map((t) => {
-      //             const h = t.split(':')[0];
-      //             if (
-      //               hSlotTaken.filter(
-      //                 (x) =>
-      //                   Number(h) >= Number(x.appointmentTimeStart) &&
-      //                   Number(h) < Number(x.appointmentTimeEnd)
-      //               ).length <= 0
-      //             ) {
-      //               return t;
-      //             } else {
-      //               return null;
-      //             }
-      //           })
-      //           .filter((x) => x !== null && x !== undefined && x !== '');
-      //         console.log(this.availableTimeSlot);
-      //         this.isLoading = false;
-      //       } else {
-      //         this.error = Array.isArray(res.message)
-      //           ? res.message[0]
-      //           : res.message;
-      //         this.snackBar.snackbarError(this.error);
-      //         this.isLoading = false;
-      //       }
-      //     },
-      //     async (e) => {
-      //       this.error = Array.isArray(e.message) ? e.message[0] : e.message;
-      //       this.snackBar.snackbarError(this.error);
-      //       this.isLoading = false;
-      //     }
-      //   );
+              this.availableTimeSlot = timeSlotOptions
+                .map((t) => {
+                  const h = t.split(':')[0];
+                  if (
+                    hSlotTaken.filter(
+                      (x) =>
+                        Number(h) >= Number(x.appointmentTimeStart) &&
+                        Number(h) < Number(x.appointmentTimeEnd)
+                    ).length <= 0
+                  ) {
+                    return t;
+                  } else {
+                    return null;
+                  }
+                })
+                .filter((x) => x !== null && x !== undefined && x !== '');
+              console.log(this.availableTimeSlot);
+              this.isLoading = false;
+            } else {
+              this.error = Array.isArray(res.message)
+                ? res.message[0]
+                : res.message;
+              this.snackBar.snackbarError(this.error);
+              this.isLoading = false;
+            }
+          },
+          async (e) => {
+            this.error = Array.isArray(e.message) ? e.message[0] : e.message;
+            this.snackBar.snackbarError(this.error);
+            this.isLoading = false;
+          }
+        );
     } catch (e) {
       this.error = Array.isArray(e.message) ? e.message[0] : e.message;
       this.snackBar.snackbarError(this.error);

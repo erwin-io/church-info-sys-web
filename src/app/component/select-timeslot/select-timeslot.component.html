@@ -5,12 +5,12 @@
     <form [formGroup]="selectTimeSlotForm" (ngSubmit)="onSubmit()" fxLayout="column" id="selectTimeSlotForm" fxLayoutAlign="center" >
       <fieldset fxFlex="100" fxLayout="column" [disabled]="isProcessing || isLoading">
         <mat-form-field appearance="outline" fxFlex="100">
-          <mat-label>Appointment date</mat-label>
+          <mat-label>Reservation Date</mat-label>
           <input
             matInput
-            placeholder="Appointment date"
-            formControlName="appointmentDate"
-            autocomplete="new-appointmentDate"
+            placeholder="Reservation Date"
+            formControlName="reservationDate"
+            autocomplete="new-reservationDate"
             [matDatepicker]="picker"
             (click)="picker.open()"
             [min]="data.minDate"
@@ -20,8 +20,8 @@
             [for]="picker"
           ></mat-datepicker-toggle>
           <mat-datepicker #picker></mat-datepicker>
-          <mat-error *ngIf="getError('appointmentDate') !== (null || undefined)">{{
-            (getError('appointmentDate') && getError('appointmentDate').required ? 'Please enter pet type name' : '')
+          <mat-error *ngIf="getError('reservationDate') !== (null || undefined)">{{
+            (getError('reservationDate') && getError('reservationDate').required ? 'Please enter reservation date' : '')
           }}</mat-error>
         </mat-form-field>
         <div fxLayout="column" fxFlex="100" class="time-slot" *ngIf="!isLoading; else elseLoadingTimeSlot">

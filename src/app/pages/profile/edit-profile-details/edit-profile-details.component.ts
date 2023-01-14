@@ -45,16 +45,13 @@ export class EditProfileDetailsComponent implements OnInit {
     ) {
       this.currentUser = this.storageService.getLoginUser();
       this.userForm = this.formBuilder.group({
-        firstName: ['', Validators.required],
-        middleName: [],
-        lastName: ['', Validators.required],
+        name: ['', Validators.required],
         genderId: ['', Validators.required],
         email: ['',
         Validators.compose(
             [Validators.email, Validators.required])],
         mobileNumber: ['',
             [Validators.minLength(11),Validators.maxLength(11), Validators.pattern("^[0-9]*$"), Validators.required]],
-        address: ['', Validators.required],
       });
       this.initUser(this.currentUser.userId);
   }
@@ -175,7 +172,7 @@ export class EditProfileDetailsComponent implements OnInit {
               this.currentUser.mobileNumber = res.data.mobileNumber;
               this.currentUser.email = res.data.email;
               this.currentUser.address = res.data.address;
-              this.currentUser.userProfilePic = res.data.user.userProfilePic.file.url;
+              this.currentUser.userProfilePic = res.data.user.userProfilePic ? res.data.user.userProfilePic.file.url : '';
               this.storageService.saveLoginUser(this.currentUser);
               this.snackBar.snackbarSuccess('Saved!');
               this.isProcessing = false;

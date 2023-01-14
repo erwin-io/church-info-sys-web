@@ -1,5 +1,5 @@
 {
-  "appointmentConfig": {
+  "reservationConfig": {
     "maxCancellation": "3",
     "daysCancellationLimitReset": "5",
     "timeSlotHours": {
@@ -10,15 +10,21 @@
     "dayOfWeekNotAvailable": ["Sunday", "Wednesday", "Saturday"]
   },
   "tableColumns": {
+    "reservation": {
+      "admin": ["reservationId", "reservationDate", "client", "consultaionType", "reservationStatus", "controls"],
+      "frontDesk": ["reservationId", "reservationDate", "client", "consultaionType", "reservationStatus", "controls"]
+    }
   },
   "lookup": {
+    "reservationStatus": ["Pending", "Approved", "Completed", "Cancelled"],
+    "reservationType": ["Baptism", "Wedding", "Mass intentions", "Funeral mass"],
     "roles": [
       {
         "roleId": "1",
         "name": "Admin"
       },
       {
-        "roleId": "4",
+        "roleId": "2",
         "name": "Front desk"
       }]
   },
@@ -47,6 +53,14 @@
       "changePassword": "users/changePassword"
     },
     "role": "roles/",
+    "reservation": {
+      "getByAdvanceSearch": "reservation/getByAdvanceSearch",
+      "getById": "reservation/",
+      "getReservationForADay": "reservation/getReservationForADay/",
+      "createReservation": "reservation/createReservation",
+      "rescheduleReservation": "reservation/rescheduleReservation",
+      "updateReservationStatus": "reservation/updateReservationStatus"
+    },
     "dashboard": {
     },
     "message": {

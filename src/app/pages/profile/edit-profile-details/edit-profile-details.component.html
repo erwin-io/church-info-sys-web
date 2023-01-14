@@ -22,39 +22,16 @@
               </div>
               <div fxFlex="100" fxLayout="column" fxLayout.gt-sm="row" >
                 <mat-form-field appearance="outline" fxFlex="33.33%" class="cell" [ngClass.gt-sm]="{'isLargeScreen': true}" *ngIf="!isLoading; else elseLoadingGridCol3">
-                  <mat-label>First name</mat-label>
+                  <mat-label>Name</mat-label>
                   <input
                     matInput
-                    placeholder="First name"
-                    formControlName="firstName"
-                    [(ngModel)]="userData.firstName">
-                    <mat-error *ngIf="getError('firstName') !== (null || undefined)">{{
-                      (getError('firstName') && getError('firstName').required ? 'Please enter your first name' : '')||
-                      (getError('firstName') && getError('firstName').pattern ? 'Invalid input' : '')
+                    placeholder="Name"
+                    formControlName="name"
+                    [(ngModel)]="userData.name">
+                    <mat-error *ngIf="getError('name') !== (null || undefined)">{{
+                      (getError('name') && getError('name').required ? 'Please enter your name' : '')||
+                      (getError('name') && getError('name').pattern ? 'Invalid input' : '')
 
-                    }}</mat-error>
-                </mat-form-field>
-                <mat-form-field appearance="outline" fxFlex="33.33%" class="cell" [ngClass.gt-sm]="{'isLargeScreen': true}" *ngIf="!isLoading; else elseLoadingGridCol3">
-                  <mat-label>Middle name</mat-label>
-                  <input
-                    matInput
-                    placeholder="Middle name"
-                    formControlName="middleName"
-                    [(ngModel)]="userData.middleName">
-                    <mat-error *ngIf="getError('middleName') !== (null || undefined)">{{
-                      (getError('middleName') && getError('middleName').pattern ? 'Invalid input' : '')
-                    }}</mat-error>
-                </mat-form-field>
-                <mat-form-field appearance="outline" fxFlex="33.33%" class="cell" [ngClass.gt-sm]="{'isLargeScreen': true}" *ngIf="!isLoading; else elseLoadingGridCol3">
-                  <mat-label>Last name</mat-label>
-                  <input
-                    matInput
-                    placeholder="Last name"
-                    formControlName="lastName"
-                    [(ngModel)]="userData.lastName">
-                    <mat-error *ngIf="getError('lastName') !== (null || undefined)">{{
-                      (getError('lastName') && getError('lastName').required ? 'Please enter your last name' : '')||
-                      (getError('firstName') && getError('firstName').pattern ? 'Invalid input' : '')
                     }}</mat-error>
                 </mat-form-field>
               </div>
@@ -73,7 +50,7 @@
               <div fxFlex="100" fxLayout="column">
                 <h3>Contact</h3>
               </div>
-              <div fxFlex="100" fxLayout="column" fxLayout.gt-sm="row">
+              <div fxFlex="100" fxLayout="column" fxLayout.gt-sm="row" fxLayoutGap="20" fxLayoutGap.gt-sm="0">
                 <mat-form-field appearance="outline" fxFlex="33.33%" class="cell" [ngClass.gt-sm]="{'isLargeScreen': true}" *ngIf="!isLoading; else elseLoadingGridCol3">
                   <mat-label>Email</mat-label>
                   <input
@@ -99,23 +76,6 @@
                       (getError('mobileNumber') && getError('mobileNumber').minlength ? 'Please enter a valid mobile number' : '') ||
                       (getError('mobileNumber') && getError('mobileNumber').maxlength ? 'Please enter a valid 11 digit mobile number' : '')
                     }}</mat-error>
-                </mat-form-field>
-              </div>
-              <div fxFlex="100" fxLayout="column">
-                <h3>Address</h3>
-              </div>
-              <div fxFlex="100" fxLayout="column" fxLayout.gt-sm="row">
-                <mat-form-field appearance="outline" fxFlex="100" class="cell" [ngClass.gt-sm]="{'isLargeScreen': true}" *ngIf="!isLoading; else elseLoadingGridCol1">
-                  <mat-label>Address</mat-label>
-                  <textarea
-                    matInput
-                    placeholder="Address"
-                    formControlName="address"
-                    [(ngModel)]="userData.address">
-                  </textarea>
-                  <mat-error *ngIf="getError('address') !== (null || undefined)">{{
-                    (getError('address') && getError('address').required ? 'Please enter your address' : '')
-                  }}</mat-error>
                 </mat-form-field>
               </div>
             </fieldset>
