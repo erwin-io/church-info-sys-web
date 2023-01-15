@@ -200,17 +200,17 @@ export class SelectTimeslotComponent implements OnInit {
           async (res) => {
             if (res.success) {
               const hSlotTaken = res.data.map((r) => {
-                const appointmentTimeStart = moment(
+                const reservationTimeStart = moment(
                   `${r.reservationDate} ${r.time}`
                 ).format('HH');
                 const appointmentDate = new Date(moment(
                   `${r.reservationDate} ${r.time}`
                 ).format('YYYY-MM-DD HH:mm'));
-                appointmentDate.setHours(appointmentDate.getHours() + this.data.durationInHours)
-                const appointmentTimeEnd = moment(appointmentDate).format('HH');
+                appointmentDate.setHours(appointmentDate.getHours() + this.data.durationInHours);
+                const reservationTimeEnd = moment(appointmentDate).format('HH');
                 return {
-                  appointmentTimeStart,
-                  appointmentTimeEnd,
+                  reservationTimeStart,
+                  reservationTimeEnd,
                 };
               });
 
@@ -220,8 +220,8 @@ export class SelectTimeslotComponent implements OnInit {
                   if (
                     hSlotTaken.filter(
                       (x) =>
-                        Number(h) >= Number(x.appointmentTimeStart) &&
-                        Number(h) < Number(x.appointmentTimeEnd)
+                        Number(h) >= Number(x.reservationTimeStart) &&
+                        Number(h) < Number(x.reservationTimeEnd)
                     ).length <= 0
                   ) {
                     return t;

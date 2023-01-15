@@ -139,7 +139,13 @@
                   <mat-list-item>
                     <mat-icon mat-list-icon>date_range</mat-icon>
                     <div mat-line>
-                      <strong>{{ reservation.reservationDate | date: 'MMM dd, yyyy' }}</strong>
+                      <strong>{{
+                        reservation.reservationDate + " " + reservation.time
+                          | date: "hh:mm a"
+                      }}</strong>
+                    </div>
+                    <div mat-line>
+                      <div mat-line>{{ reservation.reservationDate | date: 'MMM dd, yyyy' }}</div>
                     </div>
                   </mat-list-item>
                 </mat-list>

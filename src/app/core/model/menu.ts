@@ -14,32 +14,6 @@ export let menu: NavItem[] = [
     route: 'request',
     isParent: false,
   },
-  // {
-  //   displayName: 'Certificates',
-  //   iconName: 'assignment_turned_in',
-  //   route: 'certificates',
-  //   isParent: true,
-  //   children: [
-  //     {
-  //       displayName: 'Baptismal',
-  //       iconName: 'perm_contact_calendar',
-  //       route: 'certificates/baptismal',
-  //       isParent: false,
-  //     },
-  //     {
-  //       displayName: 'Confirmation',
-  //       iconName: 'check_circle_outline',
-  //       route: 'certificates/confirmation',
-  //       isParent: false,
-  //     },
-  //     {
-  //       displayName: 'Marriage Contract',
-  //       iconName: 'collections_bookmark',
-  //       route: 'certificates/marriage-contract',
-  //       isParent: false,
-  //     },
-  //   ]
-  // },
   {
     displayName: 'Security',
     iconName: 'security',
