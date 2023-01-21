@@ -6,13 +6,13 @@ import * as moment from "moment";
 import { Subscription } from "rxjs";
 import { SelectTimeslotComponent } from "src/app/component/select-timeslot/select-timeslot.component";
 import { ViewClientInfoComponent } from "src/app/component/view-client-info/view-client-info.component";
-import { ReservationStatusEnum } from "src/app/core/enums/reservation-status.enum";
+import { RequestStatusEnum } from "src/app/core/enums/request-status.enum";
 import { RoleEnum } from "src/app/core/enums/role.enum copy";
 import { Messages } from "src/app/core/model/messages.model";
-import { Reservation } from "src/app/core/model/reservation.model";
+import { Request } from "src/app/core/model/request.model";
 import { AppConfigService } from "src/app/core/services/app-config.service";
 import { MessageService } from "src/app/core/services/message.service";
-import { ReservationService } from "src/app/core/services/reservation.service";
+import { RequestService } from "src/app/core/services/request.service";
 import { CustomSocket } from "src/app/core/sockets/custom-socket.sockets";
 import { StorageService } from "src/app/core/storage/storage.service";
 import { Snackbar } from "src/app/core/ui/snackbar";
@@ -26,7 +26,7 @@ import { AlertDialogComponent } from "src/app/shared/alert-dialog/alert-dialog.c
   encapsulation: ViewEncapsulation.None,
 })
 export class ViewRequestComponent implements OnInit {
-  reservation: Reservation;
+  request: Request;
   currentUserId: string;
   mediaWatcher: Subscription;
   isLoading = false;
@@ -34,7 +34,7 @@ export class ViewRequestComponent implements OnInit {
   isUploading = false;
   isLoadingRoles = false;
   error;
-  statusEnum = ReservationStatusEnum;
+  statusEnum = RequestStatusEnum;
   roleEnum = RoleEnum;
   allowedAction = {
     approval: false,
@@ -42,7 +42,7 @@ export class ViewRequestComponent implements OnInit {
     cancelation: false,
     reschedule: false
   };
-  reservationAction = {
+  requestAction = {
     approval: false,
     complete: false,
     cancelation: false,
@@ -59,7 +59,7 @@ export class ViewRequestComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private storageService: StorageService,
-    private reservationService: ReservationService,
+    private requestService: RequestService,
     private snackBar: Snackbar,
     private dialog: MatDialog,
     private appconfig: AppConfigService,
@@ -76,8 +76,8 @@ export class ViewRequestComponent implements OnInit {
 
   ngOnInit(): void {
     this.currentUserId = this.storageService.getLoginUser().userId;
-    const reservationId = this.route.snapshot.paramMap.get('reservationId');
-    this.initReservation(reservationId);
+    const requestId = this.route.snapshot.paramMap.get('requestId');
+    this.initRequest(requestId);
 
     this.socket.fromEvent('messageAdded').subscribe((message) => {
       const newMessages: Messages[] = [];
@@ -107,26 +107,26 @@ export class ViewRequestComponent implements OnInit {
       console.log(this.allowedAction);
   }
 
-  initReservationAction() {
-    this.reservationAction.approval = this.reservation.reservationStatus.reservationStatusId ===
+  initRequestAction() {
+    this.requestAction.approval = this.request.requestStatus.requestStatusId ===
     this.statusEnum.PENDING.toString();
-    this.reservationAction.complete = this.reservation.reservationStatus.reservationStatusId ===
+    this.requestAction.complete = this.request.requestStatus.requestStatusId ===
       this.statusEnum.APPROVED.toString();
-    this.reservationAction.cancelation = this.reservation.reservationStatus.reservationStatusId ===
+    this.requestAction.cancelation = this.request.requestStatus.requestStatusId ===
       this.statusEnum.PENDING.toString();
-    this.reservationAction.reschedule = this.reservation.reservationStatus.reservationStatusId ===
+    this.requestAction.reschedule = this.request.requestStatus.requestStatusId ===
     this.statusEnum.PENDING.toString();
   }
 
-  initReservation(reservationId: string) {
+  initRequest(requestId: string) {
     this.isLoading = true;
     try {
-      this.reservationService.getById(reservationId).subscribe(
+      this.requestService.getById(requestId).subscribe(
         (res) => {
           if (res.success) {
             console.log(res.data);
-            this.reservation = res.data;
-            this.initReservationAction();
+            this.request = res.data;
+            this.initRequestAction();
             this.isLoading = false;
           } else {
             this.isLoading = false;
@@ -135,7 +135,7 @@ export class ViewRequestComponent implements OnInit {
               : res.message;
             this.snackBar.snackbarError(this.error);
             if (this.error.toLowerCase().includes('not found')) {
-              this.router.navigate(['/reservations/']);
+              this.router.navigate(['/requests/']);
             }
           }
         },
@@ -146,7 +146,7 @@ export class ViewRequestComponent implements OnInit {
             : err.message;
           this.snackBar.snackbarError(this.error);
           if (this.error.toLowerCase().includes('not found')) {
-            this.router.navigate(['/reservations/']);
+            this.router.navigate(['/requests/']);
           }
         }
       );
@@ -155,54 +155,33 @@ export class ViewRequestComponent implements OnInit {
       this.error = Array.isArray(e.message) ? e.message[0] : e.message;
       this.snackBar.snackbarError(this.error);
       if (this.error.toLowerCase().includes('not found')) {
-        this.router.navigate(['/reservations/']);
+        this.router.navigate(['/requests/']);
       }
     }
   }
 
-  async onReschedule() {
-    const dialogRef = this.dialog.open(SelectTimeslotComponent, {
-      closeOnNavigation: true,
-      panelClass: 'select-timeslot-dialog',
-    });
-    dialogRef.componentInstance.data = {
-      reservationDate: new Date(moment(this.reservation.reservationDate).format("YYYY-MM-DD")),
-      selectTime: moment(new Date( `${this.reservation.reservationDate} ${this.reservation.time}`)).format("HH:mm"),
-      durationInHours: 1,
-      minDate: new Date(new Date().setDate(new Date().getDate() + 1)),
-      reservationId: this.reservation.reservationId,
-      reschedule: true
-    };
-    dialogRef.componentInstance.conFirm.subscribe(async (data: { appointmentDate: Date; selectTime: string}) => {
-        this.currentUserId = this.storageService.getLoginUser().userId;
-        const reservationId = this.route.snapshot.paramMap.get('reservationId');
-        this.initReservation(reservationId);
-      dialogRef.close();
-    });
-  }
-
-  changeStatus(reservationStatusId: number) {
+  changeStatus(requestStatusId: number) {
     const status = [2,3,4];
-    if(!status.includes(reservationStatusId)){
+    if(!status.includes(requestStatusId)){
       return;
     }
     const params = {
-      reservationId: this.reservation.reservationId,
-      reservationStatusId: reservationStatusId,
+      requestId: this.request.requestId,
+      requestStatusId: requestStatusId,
       isUpdatedByClient: false
     };
     const dialogData = new AlertDialogModel();
-    if(reservationStatusId === 2) {
+    if(requestStatusId === 2) {
       dialogData.title = 'Confirm Approve';
-      dialogData.message = 'Approve reservation?';
+      dialogData.message = 'Approve request?';
     }
-    else if(reservationStatusId === 3) {
+    else if(requestStatusId === 3) {
       dialogData.title = 'Confirm Complete';
-      dialogData.message = 'Complete reservation?';
+      dialogData.message = 'Complete request?';
     }
-    else if(reservationStatusId === 4) {
+    else if(requestStatusId === 4) {
       dialogData.title = 'Confirm Complete';
-      dialogData.message = 'Complete reservation?';
+      dialogData.message = 'Complete request?';
     }
     dialogData.confirmButton = {
       visible: true,
@@ -224,24 +203,24 @@ export class ViewRequestComponent implements OnInit {
         this.isProcessing = true;
         dialogRef.componentInstance.isProcessing = this.isProcessing;
         try {
-          this.reservationService
-            .updateReservationStatus(params)
+          this.requestService
+            .updateRequestStatus(params)
             .subscribe(
               async (res) => {
                 if (res.success) {
                   dialogRef.close();
                   this.isProcessing = false;
                   dialogRef.componentInstance.isProcessing = this.isProcessing;
-                  if(reservationStatusId === this.statusEnum.APPROVED) {
-                    this.snackBar.snackbarSuccess("Reservation approved!");
+                  if(requestStatusId === this.statusEnum.APPROVED) {
+                    this.snackBar.snackbarSuccess("Request approved!");
                   }
-                  else if(reservationStatusId === this.statusEnum.COMPLETED) {
-                    this.snackBar.snackbarSuccess("Reservation completed!");
+                  else if(requestStatusId === this.statusEnum.COMPLETED) {
+                    this.snackBar.snackbarSuccess("Request completed!");
                   }
-                  else if(reservationStatusId === this.statusEnum.CANCELLED) {
-                    this.snackBar.snackbarSuccess("Reservation cancelled!");
+                  else if(requestStatusId === this.statusEnum.CANCELLED) {
+                    this.snackBar.snackbarSuccess("Request cancelled!");
                   }
-                  this.initReservation(this.reservation.reservationId);
+                  this.initRequest(this.request.requestId);
                 } else {
                   this.isProcessing = false;
                   dialogRef.componentInstance.isProcessing = this.isProcessing;

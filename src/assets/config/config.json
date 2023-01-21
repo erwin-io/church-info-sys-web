@@ -17,7 +17,9 @@
   },
   "lookup": {
     "reservationStatus": ["Pending", "Approved", "Completed", "Cancelled"],
+    "requestStatus": ["Pending", "Approved", "Completed", "Cancelled"],
     "reservationType": ["Baptism", "Wedding", "Mass intentions", "Funeral mass"],
+    "requestType": ["Baptismal Certificate", "Certificate of Confirmation", "Marriage Contract"],
     "roles": [
       {
         "roleId": "1",
@@ -60,6 +62,14 @@
       "createReservation": "reservation/createReservation",
       "rescheduleReservation": "reservation/rescheduleReservation",
       "updateReservationStatus": "reservation/updateReservationStatus"
+    },
+    "request": {
+      "getByStatus": "request/getByStatus",
+      "getByAdvanceSearch": "request/getByAdvanceSearch",
+      "getById": "request/",
+      "getRequestForADay": "request/getRequestForADay/",
+      "createRequest": "request/createRequest",
+      "updateRequestStatus": "request/updateRequestStatus"
     },
     "dashboard": {
     },

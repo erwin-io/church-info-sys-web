@@ -11,7 +11,7 @@ export let menu: NavItem[] = [
   {
     displayName: 'Request',
     iconName: 'assignment_turned_in',
-    route: 'request',
+    route: 'requests',
     isParent: false,
   },
   {

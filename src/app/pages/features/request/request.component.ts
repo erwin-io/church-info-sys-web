@@ -11,7 +11,7 @@ import * as moment from "moment";
 import { Observable, forkJoin, startWith, map } from "rxjs";
 import { RoleEnum } from "src/app/core/enums/role.enum copy";
 import { AppConfigService } from "src/app/core/services/app-config.service";
-import { ReservationService } from "src/app/core/services/reservation.service";
+import { RequestService } from "src/app/core/services/request.service";
 import { StorageService } from "src/app/core/storage/storage.service";
 import { Snackbar } from "src/app/core/ui/snackbar";
 
@@ -44,36 +44,44 @@ export class RequestComponent implements OnInit {
   separatorKeysCodes: number[] = [ENTER, COMMA];
   keywordCtrl = new FormControl('');
   clientNameCtrl = new FormControl('');
-  reservationDateFromCtrl = new FormControl(new Date());
-  reservationDateToCtrl = new FormControl(new Date());
+  requestDateFromCtrl = new FormControl(new Date());
+  requestDateToCtrl = new FormControl(new Date());
   filterSearchStatusCtrl = new FormControl('');
-  filterSearchReservationTypeCtrl = new FormControl('');
+  filterSearchRequestTypeCtrl = new FormControl('');
 
   filteredStatus: Observable<string[]>;
-  filteredReservationType: Observable<string[]>;
+  filteredRequestType: Observable<string[]>;
 
   selectedStatus: string[] = [];
-  selectedReservationType: string[] = [];
+  selectedRequestType: string[] = [];
 
   @ViewChild('filterSearchStatusInput') filterSearchStatusInput: ElementRef<HTMLInputElement>;
-  @ViewChild('filterSearchReservationTypeInput') filterSearchReservationTypeInput: ElementRef<HTMLInputElement>;
+  @ViewChild('filterSearchRequestTypeInput') filterSearchRequestTypeInput: ElementRef<HTMLInputElement>;
 
   @ViewChild(MatSort) sort: MatSort;
   constructor(
-    private reservationService: ReservationService,
+    private requestService: RequestService,
     private snackBar: Snackbar,
     private dialog: MatDialog,
     private appconfig: AppConfigService,
     private storageService: StorageService,
     public router: Router) {
       this.initAllowedAction();
-      // this.getReservations();
+      this.getRequests();
     }
 
   ngOnInit(): void {
-    this.displayedColumns = ["reservationId", "reservationDate", "client", "reservationType", "reservationStatus", "controls"];
+    this.displayedColumns = ["requestId", "requestDate", "client", "requestType", "requestStatus", "controls"];
     this.selectedStatus = this.allStatus;
-    this.selectedReservationType = this.allReservationType;
+    this.selectedRequestType = this.allRequestType;
+    this.filteredStatus = this.filterSearchStatusCtrl.valueChanges.pipe(
+      startWith(null),
+      map((value: string | null) => (value ? this.allStatus.filter(x=>x.toLowerCase().includes(value.toLowerCase())) : this.allStatus.slice())),
+    );
+    this.filteredRequestType = this.filterSearchRequestTypeCtrl.valueChanges.pipe(
+      startWith(null),
+      map((value: string | null) => (value ? this.allRequestType.filter(x=>x.toLowerCase().includes(value.toLowerCase())) : this.allRequestType.slice())),
+    );
     this.generateLoaderData(this.pageSize);
   }
 
@@ -83,15 +91,15 @@ export class RequestComponent implements OnInit {
 
   get allStatus() {
     const _items = [];
-    this.appconfig.config.lookup.reservationStatus.forEach((i: any) => {
+    this.appconfig.config.lookup.requestStatus.forEach((i: any) => {
       _items.push(i);
     });
     return _items;
   }
 
-  get allReservationType() {
+  get allRequestType() {
     const _items = [];
-    this.appconfig.config.lookup.reservationType.forEach((i: any) => {
+    this.appconfig.config.lookup.requestType.forEach((i: any) => {
       _items.push(i);
     });
     return _items;
@@ -105,11 +113,11 @@ export class RequestComponent implements OnInit {
         this.selectedStatus.splice(index, 1);
       }
     }
-    if(key === "reservationType") {
-      const index = this.selectedReservationType.indexOf(value);
+    if(key === "requestType") {
+      const index = this.selectedRequestType.indexOf(value);
 
       if (index >= 0) {
-        this.selectedReservationType.splice(index, 1);
+        this.selectedRequestType.splice(index, 1);
       }
     }
   }
@@ -120,10 +128,10 @@ export class RequestComponent implements OnInit {
       this.filterSearchStatusInput.nativeElement.value = '';
       this.filterSearchStatusCtrl.setValue(null);
     }
-    if(key === "reservationType") {
-      this.selectedReservationType.push(event.option.viewValue);
-      this.filterSearchReservationTypeInput.nativeElement.value = '';
-      this.filterSearchReservationTypeCtrl.setValue(null);
+    if(key === "requestType") {
+      this.selectedRequestType.push(event.option.viewValue);
+      this.filterSearchRequestTypeInput.nativeElement.value = '';
+      this.filterSearchRequestTypeCtrl.setValue(null);
     }
   }
 
@@ -140,28 +148,28 @@ export class RequestComponent implements OnInit {
     this.storageService.getLoginUser().role.roleId === RoleEnum.FRONTDESK.toString());
   }
 
-  async getReservations(){
+  async getRequests(){
     try{
       this.isLoading = true;
-      await this.reservationService.getByAdvanceSearch({
+      await this.requestService.getByAdvanceSearch({
         isAdvance: this.isAdvanceSearch,
         keyword: this.keywordCtrl.value,
         clientName: this.clientNameCtrl.value,
-        reservationStatus: this.selectedStatus.toString(),
-        reservationType: this.selectedReservationType.toString(),
-        reservationDateFrom: moment(this.reservationDateFromCtrl.value).format('YYYY-MM-DD'),
-        reservationDateTo: moment(this.reservationDateToCtrl.value).format('YYYY-MM-DD'),
+        requestStatus: this.selectedStatus.toString(),
+        requestType: this.selectedRequestType.toString(),
+        requestDateFrom: moment(this.requestDateFromCtrl.value).format('YYYY-MM-DD'),
+        requestDateTo: moment(this.requestDateToCtrl.value).format('YYYY-MM-DD'),
       })
       .subscribe(async res => {
         console.log(res);
         if(res.success){
           this.dataSource.data = res.data.length > 0 ? res.data.map((d)=>{
             return {
-              reservationId: d.reservationId,
-              reservationDate: d.reservationDate,
+              requestId: d.requestId,
+              requestDate: d.requestDate,
               client: d.client.fullName,
-              reservationType: d.reservationType.name,
-              reservationStatus: d.reservationStatus.name
+              requestType: d.requestType.name,
+              requestStatus: d.requestStatus.name
             }
           }) : [];
           this.dataSource.paginator = this.paginator;
