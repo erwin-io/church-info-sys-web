@@ -99,6 +99,64 @@
                   </mat-list-item>
                 </ng-template>
                 <!-- end -->
+                <!-- Mass Category -->
+                <div *ngIf="!isLoading; else elseLoadingMassCategory">
+                  <mat-list *ngIf="reservation.reservationType.reservationTypeId === '1' || reservation.reservationType.reservationTypeId === '2'">
+                    <mat-list-item >
+                      <mat-icon mat-list-icon>info</mat-icon>
+                      <div mat-line>
+                        <strong>{{ reservation.massCategory.name }}</strong>
+                      </div>
+                      <div mat-line>Mass Category</div>
+                    </mat-list-item>
+                  </mat-list>
+                </div>
+                <ng-template #elseLoadingMassCategory>
+                  <mat-list-item>
+                    <div mat-line>
+                      <ngx-skeleton-loader
+                        fxFlex
+                        [theme]="{ height: '20px', width: '20%' }"
+                      ></ngx-skeleton-loader>
+                    </div>
+                    <div mat-line>
+                      <ngx-skeleton-loader
+                        fxFlex
+                        [theme]="{ height: '20px', width: '20%' }"
+                      ></ngx-skeleton-loader>
+                    </div>
+                  </mat-list-item>
+                </ng-template>
+                <!-- end -->
+                <!-- Mass Intention Type -->
+                <div *ngIf="!isLoading; else elseLoadingMassIntentionType">
+                  <mat-list *ngIf="reservation.reservationType.reservationTypeId === '3'">
+                    <mat-list-item >
+                      <mat-icon mat-list-icon>info</mat-icon>
+                      <div mat-line>
+                        <strong>{{ reservation.massIntentionType.name }}</strong>
+                      </div>
+                      <div mat-line>Mass Intention</div>
+                    </mat-list-item>
+                  </mat-list>
+                </div>
+                <ng-template #elseLoadingMassIntentionType>
+                  <mat-list-item>
+                    <div mat-line>
+                      <ngx-skeleton-loader
+                        fxFlex
+                        [theme]="{ height: '20px', width: '20%' }"
+                      ></ngx-skeleton-loader>
+                    </div>
+                    <div mat-line>
+                      <ngx-skeleton-loader
+                        fxFlex
+                        [theme]="{ height: '20px', width: '20%' }"
+                      ></ngx-skeleton-loader>
+                    </div>
+                  </mat-list-item>
+                </ng-template>
+                <!-- end -->
                 <!-- Client info -->
                 <mat-list *ngIf="!isLoading; else elseLoadingLoadingClientInfo">
                   <mat-list-item mat-ripple style="cursor: pointer" (click)="viewClientInfo(reservation.client.user.userId)">

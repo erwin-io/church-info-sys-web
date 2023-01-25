@@ -31,6 +31,12 @@ export class StorageService {
   saveRefreshToken(value: any){
     return this.set('refreshToken', value);
   }
+  getSessionExpiredDate(){
+    return this.get('sessionExpiredDate');
+  }
+  saveSessionExpiredDate(value: any){
+    return this.set('sessionExpiredDate', value);
+  }
   private set(key: string, value: any){
     localStorage.setItem(key, value);
   }

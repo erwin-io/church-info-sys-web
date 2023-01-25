@@ -4,30 +4,22 @@
       <div fxLayout="column" fxLayout.gt-xs="row" fxLayoutGap="20px">
         <div fxFlex class="action-section">
           <div fxFlex="100" fxLayout="column" >
-            <div *ngIf="allowedAction.reschedule || allowedAction.approval || allowedAction.complete || allowedAction.cancelation">
+            <div *ngIf="allowedAction.readyForPickup || allowedAction.closed">
               <h4 class="action-header-text">Action</h4>
               <ul fxLayout="column" class="action-menu">
-                <li *ngIf="allowedAction.approval">
-                  <button [disabled]="!requestAction.approval" mat-stroked-button color="primary" (click)="changeStatus(2)">
+                <li *ngIf="allowedAction.readyForPickup">
+                  <button [disabled]="!requestAction.readyForPickup" mat-stroked-button color="primary" (click)="changeStatus(2)">
                     <div class="button-wrapper">
                       <mat-icon>check</mat-icon>
-                      <span>Approved</span>
+                      <span>Ready for pickup</span>
                     </div>
                   </button>
                 </li>
-                <li *ngIf="allowedAction.complete">
-                  <button [disabled]="!requestAction.complete" mat-flat-button color="primary" (click)="changeStatus(3)">
+                <li *ngIf="allowedAction.closed">
+                  <button [disabled]="!requestAction.closed" mat-flat-button color="primary" (click)="changeStatus(3)">
                     <div class="button-wrapper">
                       <mat-icon>check</mat-icon>
-                      <span>Complete</span>
-                    </div>
-                  </button>
-                </li>
-                <li *ngIf="allowedAction.cancelation">
-                  <button [disabled]="!requestAction.cancelation" mat-stroked-button color="warn" (click)="changeStatus(4)">
-                    <div class="button-wrapper">
-                      <mat-icon>close</mat-icon>
-                      <span>Cancel</span>
+                      <span>Closed</span>
                     </div>
                   </button>
                 </li>
@@ -67,7 +59,7 @@
                 <mat-list
                   *ngIf="!isLoading; else elseLoadingLoadingRequestType">
                   <mat-list-item >
-                    <mat-icon mat-list-icon>check_box</mat-icon>
+                    <mat-icon mat-list-icon>info</mat-icon>
                     <div mat-line>
                       <strong>{{ request.requestType.name }}</strong>
                     </div>
@@ -75,6 +67,42 @@
                   </mat-list-item>
                 </mat-list>
                 <ng-template #elseLoadingLoadingRequestType>
+                  <mat-list-item>
+                    <div mat-line>
+                      <ngx-skeleton-loader
+                        fxFlex
+                        [theme]="{ height: '20px', width: '20%' }"
+                      ></ngx-skeleton-loader>
+                    </div>
+                    <div mat-line>
+                      <ngx-skeleton-loader
+                        fxFlex
+                        [theme]="{ height: '20px', width: '20%' }"
+                      ></ngx-skeleton-loader>
+                    </div>
+                  </mat-list-item>
+                </ng-template>
+                <!-- end -->
+                <!-- Mass Intention Type -->
+                <div *ngIf="!isLoading; else elseLoadingMCertifInfo">
+                  <mat-list *ngIf="request.requestType.requestTypeId === '3'">
+                    <mat-list-item >
+                      <mat-icon mat-list-icon></mat-icon>
+                      <div mat-line>
+                        <strong>{{ request.husbandFullName }}</strong>
+                      </div>
+                      <div mat-line>Name of the Husband</div>
+                    </mat-list-item>
+                    <mat-list-item >
+                      <mat-icon mat-list-icon></mat-icon>
+                      <div mat-line>
+                        <strong>{{ request.wifeFullName }}</strong>
+                      </div>
+                      <div mat-line>Name of the Wife</div>
+                    </mat-list-item>
+                  </mat-list>
+                </div>
+                <ng-template #elseLoadingMCertifInfo>
                   <mat-list-item>
                     <div mat-line>
                       <ngx-skeleton-loader

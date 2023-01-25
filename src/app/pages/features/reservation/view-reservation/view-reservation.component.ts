@@ -11,9 +11,7 @@ import { RoleEnum } from "src/app/core/enums/role.enum copy";
 import { Messages } from "src/app/core/model/messages.model";
 import { Reservation } from "src/app/core/model/reservation.model";
 import { AppConfigService } from "src/app/core/services/app-config.service";
-import { MessageService } from "src/app/core/services/message.service";
 import { ReservationService } from "src/app/core/services/reservation.service";
-import { CustomSocket } from "src/app/core/sockets/custom-socket.sockets";
 import { StorageService } from "src/app/core/storage/storage.service";
 import { Snackbar } from "src/app/core/ui/snackbar";
 import { AlertDialogModel } from "src/app/shared/alert-dialog/alert-dialog-model";
@@ -64,8 +62,6 @@ export class ViewReservationComponent implements OnInit {
     private dialog: MatDialog,
     private appconfig: AppConfigService,
     public router: Router,
-    private messageService: MessageService,
-    private socket: CustomSocket,
   ) {
     this.initAllowedAction();
   }
@@ -78,12 +74,6 @@ export class ViewReservationComponent implements OnInit {
     this.currentUserId = this.storageService.getLoginUser().userId;
     const reservationId = this.route.snapshot.paramMap.get('reservationId');
     this.initReservation(reservationId);
-
-    this.socket.fromEvent('messageAdded').subscribe((message) => {
-      const newMessages: Messages[] = [];
-      newMessages.push(message as Messages);
-      this.messages = [ ...newMessages, ...this.messages ];
-    });
   }
 
   initAllowedAction() {

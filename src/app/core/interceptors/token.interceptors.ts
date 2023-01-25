@@ -108,10 +108,6 @@ export class TokenInterceptor implements HttpInterceptor {
 
   private handleLogout(){
     this.authService.logout();
-    this.storageService.saveAccessToken(null);
-    this.storageService.saveRefreshToken(null);
-    this.storageService.saveLoginUser(null);
-    this.router.navigate(['auth/login'], { replaceUrl: true });
   }
 
 }

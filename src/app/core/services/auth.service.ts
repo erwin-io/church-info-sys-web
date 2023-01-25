@@ -6,6 +6,8 @@ import { environment } from '../../../environments/environment';
 import { catchError, tap } from 'rxjs/operators';
 import { IServices } from './interface/iservices';
 import { AppConfigService } from './app-config.service';
+import { Router } from '@angular/router';
+import { StorageService } from '../storage/storage.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +17,11 @@ export class AuthService implements IServices {
   isLoggedIn = false;
   redirectUrl: string;
 
-  constructor(private http: HttpClient, private appconfig: AppConfigService) { }
+  constructor(
+    private http: HttpClient, 
+    private router: Router,
+    private storageService: StorageService,
+    private appconfig: AppConfigService) { }
 
   login(data: any): Observable<any> {
     return this.http.post<any>(environment.apiBaseUrl + this.appconfig.config.apiEndPoints.auth.login, data)
@@ -26,6 +32,12 @@ export class AuthService implements IServices {
   }
 
   logout(): Observable<any> {
+    this.storageService.saveAccessToken(null);
+    this.storageService.saveRefreshToken(null);
+    this.storageService.saveSessionExpiredDate(null);
+    this.storageService.saveLoginUser(null);
+    this.router.navigate(['/auth/login'], { replaceUrl: true });
+
     return this.http.get<any>(environment.apiBaseUrl + this.appconfig.config.apiEndPoints.auth.logout)
     .pipe(
       tap(_ => this.isLoggedIn = false),

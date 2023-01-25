@@ -15,9 +15,12 @@
       "frontDesk": ["reservationId", "reservationDate", "client", "consultaionType", "reservationStatus", "controls"]
     }
   },
+  "sessionConfig": {
+    "sessionTimeout": "60"
+  },
   "lookup": {
     "reservationStatus": ["Pending", "Approved", "Completed", "Cancelled"],
-    "requestStatus": ["Pending", "Approved", "Completed", "Cancelled"],
+    "requestStatus": ["Pending", "Ready for pickup", "Closed"],
     "reservationType": ["Baptism", "Wedding", "Mass intentions", "Funeral mass"],
     "requestType": ["Baptismal Certificate", "Certificate of Confirmation", "Marriage Contract"],
     "roles": [
@@ -28,7 +31,9 @@
       {
         "roleId": "2",
         "name": "Front desk"
-      }]
+      }],
+    "massCategory": ["Special", "Common"],
+    "massIntentionType": ["Pamisa Pasalamat", "Pamisa sa Birthday", "House Blessing", "Pamisa sa Kalag"]
   },
   "apiEndPoints": {
     "auth": {

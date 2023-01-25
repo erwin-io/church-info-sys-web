@@ -1,15 +1,18 @@
-import { Client } from "./client.model";
+import { Client } from './client.model';
 
 export class Request {
   requestId: string;
   requestDate: Date;
-  time: string;
   remarks: string;
   isCancelledByAdmin: boolean;
   adminRemarks: string;
   client: Client;
   requestType: RequestType;
   requestStatus: RequestStatus;
+  requestersFullName: string;
+  husbandFullName: string;
+  wifeFullName: string;
+  referenceDate: Date;
 }
 
 export class RequestStatus {

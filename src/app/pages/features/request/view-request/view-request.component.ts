@@ -11,9 +11,7 @@ import { RoleEnum } from "src/app/core/enums/role.enum copy";
 import { Messages } from "src/app/core/model/messages.model";
 import { Request } from "src/app/core/model/request.model";
 import { AppConfigService } from "src/app/core/services/app-config.service";
-import { MessageService } from "src/app/core/services/message.service";
 import { RequestService } from "src/app/core/services/request.service";
-import { CustomSocket } from "src/app/core/sockets/custom-socket.sockets";
 import { StorageService } from "src/app/core/storage/storage.service";
 import { Snackbar } from "src/app/core/ui/snackbar";
 import { AlertDialogModel } from "src/app/shared/alert-dialog/alert-dialog-model";
@@ -37,16 +35,12 @@ export class ViewRequestComponent implements OnInit {
   statusEnum = RequestStatusEnum;
   roleEnum = RoleEnum;
   allowedAction = {
-    approval: false,
-    complete: false,
-    cancelation: false,
-    reschedule: false
+    readyForPickup: false,
+    closed: false
   };
   requestAction = {
-    approval: false,
-    complete: false,
-    cancelation: false,
-    reschedule: false,
+    readyForPickup: false,
+    closed: false,
   };
   messages: any[] = [];
   currentMessagePage = 0;
@@ -64,8 +58,6 @@ export class ViewRequestComponent implements OnInit {
     private dialog: MatDialog,
     private appconfig: AppConfigService,
     public router: Router,
-    private messageService: MessageService,
-    private socket: CustomSocket,
   ) {
     this.initAllowedAction();
   }
@@ -79,26 +71,15 @@ export class ViewRequestComponent implements OnInit {
     const requestId = this.route.snapshot.paramMap.get('requestId');
     this.initRequest(requestId);
 
-    this.socket.fromEvent('messageAdded').subscribe((message) => {
-      const newMessages: Messages[] = [];
-      newMessages.push(message as Messages);
-      this.messages = [ ...newMessages, ...this.messages ];
-    });
   }
 
   initAllowedAction() {
-    this.allowedAction.approval =
-      this.storageService.getLoginUser().role.roleId ===
-        this.roleEnum.ADMIN.toString();
-    this.allowedAction.complete =
-      this.storageService.getLoginUser().role.roleId ===
-        this.roleEnum.ADMIN.toString();
-    this.allowedAction.cancelation =
+    this.allowedAction.readyForPickup =
       this.storageService.getLoginUser().role.roleId ===
         this.roleEnum.ADMIN.toString() ||
       this.storageService.getLoginUser().role.roleId ===
         this.roleEnum.FRONTDESK.toString();
-    this.allowedAction.reschedule =
+    this.allowedAction.closed =
       this.storageService.getLoginUser().role.roleId ===
         this.roleEnum.ADMIN.toString() ||
       this.storageService.getLoginUser().role.roleId ===
@@ -108,14 +89,10 @@ export class ViewRequestComponent implements OnInit {
   }
 
   initRequestAction() {
-    this.requestAction.approval = this.request.requestStatus.requestStatusId ===
+    this.requestAction.readyForPickup = this.request.requestStatus.requestStatusId ===
     this.statusEnum.PENDING.toString();
-    this.requestAction.complete = this.request.requestStatus.requestStatusId ===
-      this.statusEnum.APPROVED.toString();
-    this.requestAction.cancelation = this.request.requestStatus.requestStatusId ===
-      this.statusEnum.PENDING.toString();
-    this.requestAction.reschedule = this.request.requestStatus.requestStatusId ===
-    this.statusEnum.PENDING.toString();
+    this.requestAction.closed = this.request.requestStatus.requestStatusId ===
+      this.statusEnum.READYFORPICKUP.toString();
   }
 
   initRequest(requestId: string) {
@@ -172,16 +149,12 @@ export class ViewRequestComponent implements OnInit {
     };
     const dialogData = new AlertDialogModel();
     if(requestStatusId === 2) {
-      dialogData.title = 'Confirm Approve';
-      dialogData.message = 'Approve request?';
+      dialogData.title = 'Confirm Ready for pickup';
+      dialogData.message = 'Ready for pickup?';
     }
     else if(requestStatusId === 3) {
-      dialogData.title = 'Confirm Complete';
-      dialogData.message = 'Complete request?';
-    }
-    else if(requestStatusId === 4) {
-      dialogData.title = 'Confirm Complete';
-      dialogData.message = 'Complete request?';
+      dialogData.title = 'Confirm Closed';
+      dialogData.message = 'Closed request?';
     }
     dialogData.confirmButton = {
       visible: true,
@@ -211,14 +184,11 @@ export class ViewRequestComponent implements OnInit {
                   dialogRef.close();
                   this.isProcessing = false;
                   dialogRef.componentInstance.isProcessing = this.isProcessing;
-                  if(requestStatusId === this.statusEnum.APPROVED) {
-                    this.snackBar.snackbarSuccess("Request approved!");
+                  if(requestStatusId === this.statusEnum.READYFORPICKUP) {
+                    this.snackBar.snackbarSuccess("Request is now ready for pickup!");
                   }
-                  else if(requestStatusId === this.statusEnum.COMPLETED) {
-                    this.snackBar.snackbarSuccess("Request completed!");
-                  }
-                  else if(requestStatusId === this.statusEnum.CANCELLED) {
-                    this.snackBar.snackbarSuccess("Request cancelled!");
+                  else if(requestStatusId === this.statusEnum.CLOSED) {
+                    this.snackBar.snackbarSuccess("Request closed!");
                   }
                   this.initRequest(this.request.requestId);
                 } else {

@@ -6,6 +6,8 @@ import { AuthService } from '../../../../app/core/services/auth.service';
 import { LoginResult } from '../../../../app/core/model/loginresult.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Snackbar } from '../../../../app/core/ui/snackbar';
+import { AppConfigService } from 'src/app/core/services/app-config.service';
+import * as moment from 'moment';
 
 
 @Component({
@@ -21,6 +23,7 @@ export class LoginComponent implements OnInit {
   returnUrl: string;
   error: string;
   isProcessing = false;
+  sessionTimeout;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -28,8 +31,12 @@ export class LoginComponent implements OnInit {
     private router: Router,
     private authService: AuthService,
     private storageService: StorageService,
+    private appconfig: AppConfigService,
     private snackBar: Snackbar) {
       // redirect to home if already logged in
+      this.sessionTimeout = Number(
+        this.appconfig.config.sessionConfig.sessionTimeout
+      );
 
       const user = this.storageService.getLoginUser();
       if (user !== null || user !== undefined) {
@@ -63,6 +70,10 @@ export class LoginComponent implements OnInit {
             this.storageService.saveAccessToken(res.data.refreshToken);
             const userData: LoginResult = res.data;
             this.storageService.saveLoginUser(userData);
+            const today = new Date();
+            today.setTime(today.getTime() + this.sessionTimeout * 1000);
+            console.log(moment(today).format('MMM DD, YYYY hh:mm:ss a'));
+            this.storageService.saveSessionExpiredDate(today);
             console.log(this.authService.redirectUrl);
             this.router.navigate([this.authService.redirectUrl], { replaceUrl: true });
             this.isProcessing = false;
