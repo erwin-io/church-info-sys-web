@@ -96,7 +96,7 @@
                     <mat-list-item >
                       <mat-icon mat-list-icon>today</mat-icon>
                       <div mat-line>
-                        <strong>{{ request.referenceDate }}</strong>
+                        <strong>{{ request.referenceDate | date: 'MMMM dd, yyy' }}</strong>
                       </div>
                       <div mat-line>Date baptized</div>
                     </mat-list-item>
@@ -132,7 +132,7 @@
                     <mat-list-item >
                       <mat-icon mat-list-icon>today</mat-icon>
                       <div mat-line>
-                        <strong>{{ request.referenceDate }}</strong>
+                        <strong>{{ request.referenceDate | date: 'MMMM dd, yyy' }}</strong>
                       </div>
                       <div mat-line>Date of confirmation</div>
                     </mat-list-item>
@@ -175,7 +175,7 @@
                     <mat-list-item >
                       <mat-icon mat-list-icon>today</mat-icon>
                       <div mat-line>
-                        <strong>{{ request.referenceDate }}</strong>
+                        <strong>{{ request.referenceDate | date: 'MMMM dd, yyy' }}</strong>
                       </div>
                       <div mat-line>Date married</div>
                     </mat-list-item>
