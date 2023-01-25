@@ -22,7 +22,7 @@ export class AppComponent implements OnInit, OnDestroy{
   ngOnInit() {
     //start session
       const currentUser = this.storageService.getLoginUser();
-      if(currentUser) {
+      if(currentUser && this.storageService.getSessionExpiredDate()) {
         this.sessionActivityService.stop();
         this.sessionActivityService.start();
       }
