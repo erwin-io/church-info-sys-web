@@ -83,7 +83,79 @@
                   </mat-list-item>
                 </ng-template>
                 <!-- end -->
-                <!-- Mass Intention Type -->
+                <!-- info baptized-->
+                <div *ngIf="!isLoading; else elseLoadingBaptismalCertInfo">
+                  <mat-list *ngIf="request.requestType.requestTypeId === '1'">
+                    <mat-list-item >
+                      <mat-icon mat-list-icon>person_outline</mat-icon>
+                      <div mat-line>
+                        <strong>{{ request.requestersFullName }}</strong>
+                      </div>
+                      <div mat-line>Name of Requester</div>
+                    </mat-list-item>
+                    <mat-list-item >
+                      <mat-icon mat-list-icon>today</mat-icon>
+                      <div mat-line>
+                        <strong>{{ request.referenceDate }}</strong>
+                      </div>
+                      <div mat-line>Date baptized</div>
+                    </mat-list-item>
+                  </mat-list>
+                </div>
+                <ng-template #elseLoadingBaptismalCertInfo>
+                  <mat-list-item>
+                    <div mat-line>
+                      <ngx-skeleton-loader
+                        fxFlex
+                        [theme]="{ height: '20px', width: '20%' }"
+                      ></ngx-skeleton-loader>
+                    </div>
+                    <div mat-line>
+                      <ngx-skeleton-loader
+                        fxFlex
+                        [theme]="{ height: '20px', width: '20%' }"
+                      ></ngx-skeleton-loader>
+                    </div>
+                  </mat-list-item>
+                </ng-template>
+                <!-- end -->
+                <!-- info confirmation-->
+                <div *ngIf="!isLoading; else elseLoadingBaptismalCertInfo">
+                  <mat-list *ngIf="request.requestType.requestTypeId === '2'">
+                    <mat-list-item >
+                      <mat-icon mat-list-icon>person_outline</mat-icon>
+                      <div mat-line>
+                        <strong>{{ request.requestersFullName }}</strong>
+                      </div>
+                      <div mat-line>Name of Requester</div>
+                    </mat-list-item>
+                    <mat-list-item >
+                      <mat-icon mat-list-icon>today</mat-icon>
+                      <div mat-line>
+                        <strong>{{ request.referenceDate }}</strong>
+                      </div>
+                      <div mat-line>Date of confirmation</div>
+                    </mat-list-item>
+                  </mat-list>
+                </div>
+                <ng-template #elseLoadingBaptismalCertInfo>
+                  <mat-list-item>
+                    <div mat-line>
+                      <ngx-skeleton-loader
+                        fxFlex
+                        [theme]="{ height: '20px', width: '20%' }"
+                      ></ngx-skeleton-loader>
+                    </div>
+                    <div mat-line>
+                      <ngx-skeleton-loader
+                        fxFlex
+                        [theme]="{ height: '20px', width: '20%' }"
+                      ></ngx-skeleton-loader>
+                    </div>
+                  </mat-list-item>
+                </ng-template>
+                <!-- end -->
+                <!-- info married-->
                 <div *ngIf="!isLoading; else elseLoadingMCertifInfo">
                   <mat-list *ngIf="request.requestType.requestTypeId === '3'">
                     <mat-list-item >
@@ -100,10 +172,23 @@
                       </div>
                       <div mat-line>Name of the Wife</div>
                     </mat-list-item>
+                    <mat-list-item >
+                      <mat-icon mat-list-icon>today</mat-icon>
+                      <div mat-line>
+                        <strong>{{ request.referenceDate }}</strong>
+                      </div>
+                      <div mat-line>Date married</div>
+                    </mat-list-item>
                   </mat-list>
                 </div>
                 <ng-template #elseLoadingMCertifInfo>
                   <mat-list-item>
+                    <div mat-line>
+                      <ngx-skeleton-loader
+                        fxFlex
+                        [theme]="{ height: '20px', width: '20%' }"
+                      ></ngx-skeleton-loader>
+                    </div>
                     <div mat-line>
                       <ngx-skeleton-loader
                         fxFlex
