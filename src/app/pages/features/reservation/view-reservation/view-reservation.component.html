@@ -191,6 +191,89 @@
                   </mat-list-item>
                 </ng-template>
                 <!-- end -->
+                <!-- Person info -->
+                <mat-list *ngIf="!isLoading; else elseLoadingLoadingNamenfo">
+                  <mat-list-item *ngIf="reservation.reservationType.reservationTypeId !== '2'">
+                    <div mat-line>
+                      <strong>{{reservation.firstName + ' ' + reservation.lastName}}</strong>
+                    </div>
+                    <div mat-line>
+                      Name
+                    </div>
+                  </mat-list-item>
+                </mat-list>
+                <ng-template #elseLoadingLoadingNamenfo>
+                  <mat-list-item>
+                    <div mat-line>
+                      <ngx-skeleton-loader
+                        fxFlex
+                        [theme]="{ height: '20px', width: '20%' }"
+                      ></ngx-skeleton-loader>
+                    </div>
+                    <div mat-line>
+                      <ngx-skeleton-loader
+                        fxFlex
+                        [theme]="{ height: '20px', width: '20%' }"
+                      ></ngx-skeleton-loader>
+                    </div>
+                  </mat-list-item>
+                </ng-template>
+                <!-- end -->
+                <!-- Wedd info -->
+                <mat-list *ngIf="!isLoading; else elseLoadingLoadingNameOfHusband">
+                  <mat-list-item *ngIf="reservation.reservationType.reservationTypeId === '2'">
+                    <div mat-line>
+                      <strong>{{reservation.weddingHusbandName}}</strong>
+                    </div>
+                    <div mat-line>
+                      Name of the Husband
+                    </div>
+                  </mat-list-item>
+                </mat-list>
+                <ng-template #elseLoadingLoadingNameOfHusband>
+                  <mat-list-item>
+                    <div mat-line>
+                      <ngx-skeleton-loader
+                        fxFlex
+                        [theme]="{ height: '20px', width: '20%' }"
+                      ></ngx-skeleton-loader>
+                    </div>
+                    <div mat-line>
+                      <ngx-skeleton-loader
+                        fxFlex
+                        [theme]="{ height: '20px', width: '20%' }"
+                      ></ngx-skeleton-loader>
+                    </div>
+                  </mat-list-item>
+                </ng-template>
+                
+                <mat-list *ngIf="!isLoading; else elseLoadingLoadingNameOfWife">
+                  <mat-list-item *ngIf="reservation.reservationType.reservationTypeId === '2'">
+                    <div mat-line>
+                      <strong>{{reservation.weddingWifeName}}</strong>
+                    </div>
+                    <div mat-line>
+                      Name of the Wife
+                    </div>
+                  </mat-list-item>
+                </mat-list>
+                <ng-template #elseLoadingLoadingNameOfWife>
+                  <mat-list-item>
+                    <div mat-line>
+                      <ngx-skeleton-loader
+                        fxFlex
+                        [theme]="{ height: '20px', width: '20%' }"
+                      ></ngx-skeleton-loader>
+                    </div>
+                    <div mat-line>
+                      <ngx-skeleton-loader
+                        fxFlex
+                        [theme]="{ height: '20px', width: '20%' }"
+                      ></ngx-skeleton-loader>
+                    </div>
+                  </mat-list-item>
+                </ng-template>
+                <!-- end -->
                 <mat-divider></mat-divider>
                 <!-- Reservation schedule -->
                 <mat-list *ngIf="!isLoading; else elseLoadingLoadingClientInfo">
