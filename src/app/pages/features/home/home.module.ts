@@ -26,7 +26,7 @@ export const routes: Routes = [
     NgApexchartsModule,
     ReactiveFormsModule,
     NgxSkeletonLoaderModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes),
   ]
 })
 export class HomeModule { }
