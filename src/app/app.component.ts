@@ -15,6 +15,14 @@ export class AppComponent implements OnInit, OnDestroy{
   constructor(private snackBar: MatSnackBar,
     private sessionActivityService: SessionActivityService,
     private storageService: StorageService) {
+      document.body.addEventListener("click", () => {
+        if(!this.sessionActivityService.isSessionExpired) {
+          this.sessionActivityService.stop();
+          this.sessionActivityService.resetSession();
+          this.sessionActivityService.start();
+        }
+
+      })
       // this.socket.init();
   }
 
@@ -32,15 +40,6 @@ export class AppComponent implements OnInit, OnDestroy{
     const currentUser = this.storageService.getLoginUser();
     if(currentUser) {
       this.sessionActivityService.stop();
-    }
-  }
-
-  // eslint-disable-next-line @typescript-eslint/member-ordering
-  @HostListener('click', ['$event.target']) onClick(e) {
-    if(!this.sessionActivityService.isSessionExpired) {
-      this.sessionActivityService.stop();
-      this.sessionActivityService.resetSession();
-      this.sessionActivityService.start();
     }
   }
 }
