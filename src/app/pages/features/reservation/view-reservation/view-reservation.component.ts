@@ -4,6 +4,7 @@ import { MatDialog } from "@angular/material/dialog";
 import { ActivatedRoute, Router } from "@angular/router";
 import * as moment from "moment";
 import { Subscription } from "rxjs";
+import { SelectPeopleComponent } from "src/app/component/select-people/select-people.component";
 import { SelectTimeslotComponent } from "src/app/component/select-timeslot/select-timeslot.component";
 import { ViewClientInfoComponent } from "src/app/component/view-client-info/view-client-info.component";
 import { ReservationStatusEnum } from "src/app/core/enums/reservation-status.enum";
@@ -53,6 +54,7 @@ export class ViewReservationComponent implements OnInit {
   connect = false;
   tabIndex = 1;
   diagnosisAndTreatment: FormControl = new FormControl(null, [Validators.required]);
+  assignedStaff: { id: string, fullName: string } = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -257,6 +259,21 @@ export class ViewReservationComponent implements OnInit {
           this.snackBar.snackbarError(this.error);
         }
       }
+    });
+  }
+
+  async assign() {
+    const dialogRef = this.dialog.open(SelectPeopleComponent, {
+      closeOnNavigation: true,
+      panelClass: 'select-staff-dialog',
+    });
+    dialogRef.componentInstance.typeId = 3;
+    dialogRef.componentInstance.headerMessage = "Select priest";
+    dialogRef.componentInstance.conFirm.subscribe(async (data: { id: string, fullName: string }) => {
+      if(data){
+        this.assignedStaff = data;
+      }
+      dialogRef.close();
     });
   }
 

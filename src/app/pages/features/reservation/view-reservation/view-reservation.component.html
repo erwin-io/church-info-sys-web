@@ -195,7 +195,7 @@
                 <mat-list *ngIf="!isLoading; else elseLoadingLoadingNamenfo">
                   <mat-list-item *ngIf="reservation.reservationType.reservationTypeId !== '2'">
                     <div mat-line>
-                      <strong>{{reservation.firstName + ' ' + reservation.lastName}}</strong>
+                      <strong>{{ reservation.fullName }}</strong>
                     </div>
                     <div mat-line>
                       Name
@@ -326,6 +326,28 @@
                         [theme]="{ height: '20px', width: '20%' }"
                       ></ngx-skeleton-loader>
                     </div>
+                    <div mat-line>
+                      <ngx-skeleton-loader
+                        fxFlex
+                        [theme]="{ height: '20px', width: '20%' }"
+                      ></ngx-skeleton-loader>
+                    </div>
+                  </mat-list-item>
+                </ng-template>
+                <!-- end -->
+                <!-- Assigned Priest info -->
+                <mat-list *ngIf="!isLoading; else elseLoadingLoadingAssignedPriest">
+                  <mat-list-item>
+                    <mat-icon mat-list-icon>radio_button_checked</mat-icon>
+                    <div mat-line>
+                      <div mat-line><strong>Priest</strong></div>
+                      <div mat-line>{{reservation.priest.priestName}}</div>
+                    </div>
+                  </mat-list-item>
+                </mat-list>
+                <ng-template #elseLoadingLoadingAssignedPriest>
+                  <mat-list-item>
+                    <mat-icon mat-list-icon>radio_button_checked</mat-icon>
                     <div mat-line>
                       <ngx-skeleton-loader
                         fxFlex

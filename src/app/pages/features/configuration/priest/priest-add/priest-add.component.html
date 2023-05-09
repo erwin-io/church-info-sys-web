@@ -1,0 +1,56 @@
+<mat-progress-bar mode="query" *ngIf="isLoading"></mat-progress-bar>
+<h4 mat-dialog-title>{{data?.priestId && data?.priestId !== '' ? 'Edit priest' : 'Add priest' }}</h4>
+
+<div mat-dialog-content fxLayout="column" style="overflow: unset!important">
+  <div fxFlex="100" fxLayout="column" >
+    <form [formGroup]="priestForm" (ngSubmit)="onSubmit()" fxLayout="column" id="priestForm" fxFlex="100" >
+      <fieldset fxFlex="100" fxLayout="column" [disabled]="isProcessing || isLoading">
+        <mat-form-field appearance="outline">
+          <mat-label>Name</mat-label>
+          <input
+            matInput
+            placeholder="Name"
+            formControlName="priestName">
+            <mat-error *ngIf="getError('priestName') !== (null || undefined)">{{
+              (getError('priestName') && getError('priestName').required ? 'Please enter priest name' : '')
+            }}</mat-error>
+        </mat-form-field>
+      </fieldset>
+    </form>
+  </div>
+  <div *ngIf="enableScheduler" class="availability" fxFlex="100" fxLayout="column" style="max-height: 200px!important; overflow: auto">
+    <h3>Schedule</h3>
+    <div fxFlex="100" fxLayout="row" fxLayoutGap="10px" *ngIf="weekSlot && weekSlot.length > 0">
+      <div fxFlex fxLayout="column" fxLayoutGap="20px" fxLayoutAlign="center center">
+        Time
+        <label *ngFor="let time of timeSlot; let t = index">{{getToolstrip(time)}}</label>
+      </div>
+      <div fxFlex fxLayout="column" fxLayoutGap="20px" fxLayoutAlign="center center" *ngFor="let week of weekSlot; let w = index">
+        {{week}}
+        <mat-checkbox [disabled]="isProcessing" *ngFor="let time of timeSlot; let t = index" [checked]="availability.includes(w + ':' + time)" (change)="updateAvailability(w + ':' + time, $event.checked)" [matTooltip]=" week + ' ' + getToolstrip(time) "></mat-checkbox>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div mat-dialog-actions>
+  <div>
+    <button
+      mat-flat-button
+      [disabled]="isProcessing"
+      cdkFocusInitial
+      (click)="onDismiss()"
+    >
+      Cancel
+    </button>
+    <button
+      mat-flat-button
+      [disabled]="isProcessing || !priestForm.valid"
+      color="primary"
+      form="priestForm"
+      type="submit"
+    >
+      Save
+    </button>
+  </div>
+</div>

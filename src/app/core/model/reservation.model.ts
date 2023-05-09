@@ -4,8 +4,7 @@ export class Reservation {
   reservationId: string;
   reservationDate: Date;
   time: string;
-  firstName: string;
-  lastName: string;
+  fullName: string;
   weddingWifeName: string;
   weddingHusbandName: string;
   remarks: string;
@@ -34,8 +33,12 @@ export class MassCategory {
   name: string;
 }
 
-
 export class MassIntentionType {
   massIntentionTypeId: string;
   name: string;
+}
+
+export class Priest {
+  priestId: string;
+  priestName: string;
 }

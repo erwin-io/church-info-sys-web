@@ -15,6 +15,20 @@ export let menu: NavItem[] = [
     isParent: false,
   },
   {
+    displayName: 'Configuration',
+    iconName: 'settings',
+    route: 'configuration',
+    isParent: true,
+    children: [
+      {
+        displayName: 'Priest',
+        iconName: 'radio_button_checked',
+        route: 'configuration/priest',
+        isParent: false,
+      },
+    ]
+  },
+  {
     displayName: 'Security',
     iconName: 'security',
     route: 'security',
