@@ -27,7 +27,7 @@
     "reservationStatus": ["Pending", "Approved", "Completed", "Cancelled"],
     "requestStatus": ["Pending", "Ready for pickup", "Closed"],
     "reservationType": ["Baptism", "Wedding", "Mass intentions", "Funeral mass"],
-    "requestType": ["Baptismal Certificate", "Certificate of Confirmation", "Marriage Contract"],
+    "requestType": ["Baptismal Certificate", "Certificate of Confirmation", "Marriage Contract", "Death Certificate"],
     "roles": [
       {
         "roleId": "1",

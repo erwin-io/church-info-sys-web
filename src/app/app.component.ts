@@ -15,7 +15,7 @@ export class AppComponent implements OnInit, OnDestroy{
   constructor(private snackBar: MatSnackBar,
     private sessionActivityService: SessionActivityService,
     private storageService: StorageService) {
-      document.addEventListener("click", ()=> {
+      document.addEventListener("click input", ()=> {
         if(!this.sessionActivityService.isSessionExpired) {
           this.sessionActivityService.stop();
           this.sessionActivityService.resetSession();
