@@ -47,34 +47,38 @@ export class SessionActivityService {
       );
       const diffTime = today - sessionExpiredDate;
       if (diffTime > 0) {
-        this.stop();
-            
-        const dialogData = new AlertDialogModel();
-        dialogData.title = 'Session expired';
-        dialogData.message = 'Your session expired'
-        dialogData.confirmButton = {
-          visible: false,
-          text: 'ok',
-          color: 'primary',
-        };
-        dialogData.dismissButton = {
-          visible: true,
-          text: 'ok',
-        };
-        const dialogRef = this.dialog.open(AlertDialogComponent, {
-          maxWidth: '400px',
-          closeOnNavigation: true,
-        });
-
-        console.log('logout');
-        dialogRef.componentInstance.alertDialogConfig = dialogData;
-        dialogRef.afterClosed().subscribe(()=>{
-          console.log('logout');
-          this.handleLogout();
-        });
+        this.showSessionTimeoutDialog();
       }
     } else {
     }
+  }
+
+  showSessionTimeoutDialog() {
+    this.stop();
+            
+    const dialogData = new AlertDialogModel();
+    dialogData.title = 'Session expired';
+    dialogData.message = 'Your session expired'
+    dialogData.confirmButton = {
+      visible: false,
+      text: 'ok',
+      color: 'primary',
+    };
+    dialogData.dismissButton = {
+      visible: true,
+      text: 'ok',
+    };
+    const dialogRef = this.dialog.open(AlertDialogComponent, {
+      maxWidth: '400px',
+      closeOnNavigation: true,
+    });
+
+    console.log('logout');
+    dialogRef.componentInstance.alertDialogConfig = dialogData;
+    dialogRef.afterClosed().subscribe(()=>{
+      console.log('logout');
+      this.handleLogout();
+    });
   }
 
   handleLogout() {

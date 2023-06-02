@@ -4,6 +4,7 @@ import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from
 import { Observable, tap } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 import { AppConfigService } from '../services/app-config.service';
+import { SessionActivityService } from '../services/session-activity.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,7 @@ import { AppConfigService } from '../services/app-config.service';
 export class AuthGuard implements CanActivate {
   sessionTimeout;
 
-  constructor(private authService: AuthService, private router: Router, private storageService: StorageService,
+  constructor(private authService: AuthService, private sessionActivityService: SessionActivityService, private router: Router, private storageService: StorageService,
     private appconfig: AppConfigService) {
     this.sessionTimeout = Number(this.appconfig.config.sessionConfig.sessionTimeout);
   }
@@ -28,9 +29,7 @@ export class AuthGuard implements CanActivate {
       );
       const diffTime = today - sessionExpiredDate;
       if (diffTime > 0) {
-        this.authService.redirectUrl = url;
-        console.log('session expire line 32');
-        this.authService.logout();
+        this.sessionActivityService.showSessionTimeoutDialog();
         return false;
       } else {
         today.setTime(today.getTime() + this.sessionTimeout * 1000);
